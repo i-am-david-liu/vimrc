@@ -2,7 +2,7 @@
 " Vim profile settings
 "==============================================================================
 
-" Set leader
+" Set leader, useful for custom commands
 let mapleader=","
 
 " General QOL
@@ -12,7 +12,9 @@ set colorcolumn=88      " highlight column for recommended max text length
 set title               " window displays file name
 set undofile            " undo tree persists after close
 set ttyfast             " faster character redraw
+set lazyredraw          " same as above
 set relativenumber      " line numbers are relative
+set timeout timeoutlen=1000 ttimeoutlen=100 " fix slow 'O' inserts
 
 " Command line completion
 set wildmenu
@@ -34,6 +36,11 @@ set incsearch
 set hlsearch
 set showmatch
 
+" Folding
+set foldmethod=indent   " auto-fold all indented blocks!
+set foldlevel=10        " only fold outer functions 
+set nofoldenable        " don't enable folds when opening a file
+
 " Remaps
 nnoremap <leader><space> :noh<cr>
 " STOP USING ARROW KEYS FOR MOVEMENT!!!
@@ -48,7 +55,9 @@ inoremap <right>    <nop>
 
 " File-specific settings 
 autocmd Filetype html       setlocal shiftwidth=2 tabstop=2
+autocmd Filetype css        setlocal shiftwidth=2 tabstop=2
 autocmd Filetype json       setlocal shiftwidth=2 tabstop=2
+autocmd Filetype javascript setlocal shiftwidth=2 tabstop=2
 autocmd Filetype markdown   setlocal norelativenumber 
 autocmd Filetype text       setlocal norelativenumber
 
@@ -61,13 +70,16 @@ call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
 
 " Code completion
-Plug 'ycm-core/YouCompleteMe'
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
 
 " Writing plugin
 Plug 'preservim/vim-pencil'
 
 " Latex plugin
 Plug 'lervag/vimtex'
+
+" Linting
+Plug 'dense-analysis/ale'
 
 call plug#end()
 " ===============================================
