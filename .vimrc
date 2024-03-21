@@ -20,7 +20,7 @@ set timeout timeoutlen=1000 ttimeoutlen=100 " fix slow 'O' inserts
 set wildmenu
 set wildmode=list:longest
 
-" Tab settings
+" Indent settings
 set tabstop=8           " number of spaces equal to Tab
 set softtabstop=4
 set shiftwidth=4
@@ -52,6 +52,8 @@ inoremap <up>       <nop>
 inoremap <down>     <nop>
 inoremap <left>     <nop>
 inoremap <right>    <nop>
+nnoremap <C-Left>   :tabprevious<CR>  " go to left tab
+nnoremap <C-Right>  :tabnext<CR>     " go to right tab
 
 " File-specific settings 
 autocmd Filetype html       setlocal shiftwidth=2 tabstop=2
@@ -59,7 +61,12 @@ autocmd Filetype css        setlocal shiftwidth=2 tabstop=2
 autocmd Filetype json       setlocal shiftwidth=2 tabstop=2
 autocmd Filetype javascript setlocal shiftwidth=2 tabstop=2
 autocmd Filetype markdown   setlocal norelativenumber 
+
 autocmd Filetype text       setlocal norelativenumber
+"autocmd Filetype text       colorscheme default 
+autocmd Filetype text       let &fillchars ..= ',eob: '
+autocmd Filetype text       command LightTxt colorscheme quiet 
+autocmd Filetype text       command DarkTxt colorscheme default
 
 " Vim plugin manager
 " https://github.com/junegunn/vim-plug
@@ -74,6 +81,9 @@ Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
 
 " Writing plugin
 Plug 'preservim/vim-pencil'
+
+" Distraction-free writing
+Plug 'junegunn/goyo.vim'
 
 " Latex plugin
 Plug 'lervag/vimtex'
@@ -100,3 +110,34 @@ augroup END
 filetype plugin indent on
 syntax enable
 let g:vimtex_view_method = 'zathura'
+
+" ALE linting settings
+let g:ale_virtualtext_cursor = 'current'
+let g:ale_python_flake8_options = '--extend-ignore=E501,E265,E302,E305'
+let g:ale_python_auto_poetry = 1
+
+" Goyo settings
+"autocmd Filetype text Goyo      " FIXME: starts the window in wrong focus
+let g:goyo_height = '90%'
+
+" Ensure :q to quit even when Goyo is active
+"function! s:goyo_enter()
+"  let b:quitting = 0
+"  let b:quitting_bang = 0
+"  autocmd QuitPre <buffer> let b:quitting = 1
+"  cabbrev <buffer> q! let b:quitting_bang = 1 <bar> q!
+"endfunction
+"
+"function! s:goyo_leave()
+"  " Quit Vim if this is the only remaining buffer
+"  if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
+"    if b:quitting_bang
+"      qa!
+"    else
+"      qa
+"    endif
+"  endif
+"endfunction
+"
+"autocmd! User GoyoEnter call <SID>goyo_enter()
+"autocmd! User GoyoLeave call <SID>goyo_leave()
